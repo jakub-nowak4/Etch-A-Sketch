@@ -1,4 +1,4 @@
-const TEST_COLOR = "#563A9C";
+let currentColor = "#9D12EE";
 
 //Values given in px
 const CONTAINER_WIDTH = 500;
@@ -18,6 +18,8 @@ function createGrid(n) {
 
     gridContainer.appendChild(gridItem);
   }
+
+  attachGridItemEvents();
 }
 
 function calculateGridItemSize(numOfSquares) {
@@ -26,8 +28,9 @@ function calculateGridItemSize(numOfSquares) {
 
 function getGridSize() {
   let userInput = +prompt("Enter number of squares per side: ");
+  console.log(userInput);
 
-  while (Number.isNaN(userInput)) {
+  while (Number.isNaN(userInput) || +userInput > 100 || +userInput === 0) {
     alert("Incorrect value! Please try again.");
     userInput = +prompt("Enter number of squares per side: ");
   }
@@ -35,16 +38,33 @@ function getGridSize() {
   return userInput;
 }
 
+function attachGridItemEvents() {
+  const gridItems = document.querySelectorAll(".grid-item");
+
+  gridItems.forEach((item) => {
+    item.addEventListener("mouseenter", (e) => {
+      e.target.style.cssText += `background: ${currentColor}`;
+    });
+  });
+}
+
 const gridSize = getGridSize();
 createGrid(gridSize);
 
 //Events
 
-const gridItems = document.querySelectorAll(".grid-item");
+const resetBtn = document.querySelector(".btn");
 
-gridItems.forEach((item) => {
-  item.addEventListener("mouseenter", (e) => {
-    e.target.style.cssText += `background: ${TEST_COLOR}`;
-    console.log(e.target.style.cssText);
-  });
+resetBtn.addEventListener("click", () => {
+  //Remove old
+  gridContainer.innerHTML = "";
+
+  const gridSize = getGridSize();
+  createGrid(gridSize);
+});
+
+const colorPicker = document.querySelector("#color");
+
+colorPicker.addEventListener("input", (e) => {
+  currentColor = e.target.value;
 });
